@@ -1,4 +1,4 @@
-use std::fmt::{self, Write};
+use std::fmt::{self, Write, write};
 
 use indexmap::IndexMap;
 
@@ -22,6 +22,9 @@ pub struct Scope {
     /// Scope documentation
     docs: Option<Docs>,
 
+    /// Attributes of the current scope
+    inner_attributes: Vec<String>,
+
     /// Imports
     imports: IndexMap<String, IndexMap<String, Import>>,
 
@@ -34,6 +37,7 @@ impl Scope {
     pub fn new() -> Self {
         Scope {
             docs: None,
+            inner_attributes: Vec::new(),
             imports: IndexMap::new(),
             items: vec![],
         }
@@ -219,6 +223,14 @@ impl Scope {
         self
     }
 
+    /// Add an inner attribute.
+    /// 
+    /// This adds '#[ <str> ]' at the top of the file
+    pub fn add_attribute(&mut self, val: &str) -> &mut Self {
+        self.inner_attributes.push(val.into());
+        self
+    }
+
     /// Return a string representation of the scope.
     pub fn to_string(&self) -> String {
         let mut ret = String::new();
@@ -235,6 +247,10 @@ impl Scope {
 
     /// Formats the scope using the given formatter.
     pub fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
+        for attr in self.inner_attributes.iter(){
+            write!(fmt, "#![{}]\n", attr)?;
+        }
+        
         self.fmt_imports(fmt)?;
 
         if !self.imports.is_empty() {

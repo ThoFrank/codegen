@@ -605,3 +605,16 @@ enum IpAddrKind {
 
     assert_eq!(scope.to_string(), &expect[1..]);
 }
+
+#[test]
+fn scope_with_attr() {
+    let mut scope = Scope::new();
+    scope.add_attribute("crate_type = \"bin\"");
+    scope.new_fn("main");
+
+    let expect = r#"
+#![crate_type = "bin"]
+fn main() {
+}"#;
+    assert_eq!(scope.to_string(), &expect[1..]);
+}
