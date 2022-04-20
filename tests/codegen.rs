@@ -618,3 +618,31 @@ fn main() {
 }"#;
     assert_eq!(scope.to_string(), &expect[1..]);
 }
+
+#[test]
+fn scope_with_block() {
+    let mut scope = Scope::new();
+    let mut lazy_static = Block::new("lazy_static!");
+    let mut hashmap = Block::new("static ref HASHMAP: HashMap<u32, &'static str> =");
+    hashmap
+        .line("let mut m = HashMap::new();")
+        .line("m.insert(0, \"foo\");")
+        .line("m.insert(1, \"bar\");")
+        .line("m.insert(2, \"baz\");")
+        .line("m")
+        .after(";");
+    lazy_static.push_block(hashmap);
+    scope.push_block(lazy_static);
+
+    let expect = r#"
+lazy_static! {
+    static ref HASHMAP: HashMap<u32, &'static str> = {
+        let mut m = HashMap::new();
+        m.insert(0, "foo");
+        m.insert(1, "bar");
+        m.insert(2, "baz");
+        m
+    };
+}"#;
+    assert_eq!(scope.to_string(), &expect[1..]);
+}

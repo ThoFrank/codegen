@@ -1,3 +1,4 @@
+use crate::Block;
 use crate::function::Function;
 use crate::module::Module;
 
@@ -14,5 +15,6 @@ pub enum Item {
     Trait(Trait),
     Enum(Enum),
     Impl(Impl),
+    Block(Block),
     Raw(String),
 }

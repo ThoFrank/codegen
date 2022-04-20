@@ -2,6 +2,7 @@ use std::fmt::{self, Write, write};
 
 use indexmap::IndexMap;
 
+use crate::Block;
 use crate::docs::Docs;
 use crate::formatter::Formatter;
 use crate::function::Function;
@@ -231,6 +232,14 @@ impl Scope {
         self
     }
 
+    /// Add a custom block.
+    /// 
+    /// This can be useful for something like lazy_static!
+    pub fn push_block(&mut self, block: Block) -> &mut Self{
+        self.items.push(Item::Block(block));
+        self
+    }
+
     /// Return a string representation of the scope.
     pub fn to_string(&self) -> String {
         let mut ret = String::new();
@@ -269,6 +278,7 @@ impl Scope {
                 Item::Trait(ref v) => v.fmt(fmt)?,
                 Item::Enum(ref v) => v.fmt(fmt)?,
                 Item::Impl(ref v) => v.fmt(fmt)?,
+                Item::Block(ref v) => v.fmt(fmt)?,
                 Item::Raw(ref v) => {
                     write!(fmt, "{}\n", v)?;
                 }
