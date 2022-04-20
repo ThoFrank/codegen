@@ -1,6 +1,6 @@
 use std::fmt::{self, Write, write};
 
-use indexmap::IndexMap;
+use indexmap::{IndexMap, IndexSet};
 
 use crate::Block;
 use crate::docs::Docs;
@@ -24,7 +24,7 @@ pub struct Scope {
     docs: Option<Docs>,
 
     /// Attributes of the current scope
-    inner_attributes: Vec<String>,
+    inner_attributes: IndexSet<String>,
 
     /// Imports
     imports: IndexMap<String, IndexMap<String, Import>>,
@@ -38,7 +38,7 @@ impl Scope {
     pub fn new() -> Self {
         Scope {
             docs: None,
-            inner_attributes: Vec::new(),
+            inner_attributes: IndexSet::new(),
             imports: IndexMap::new(),
             items: vec![],
         }
@@ -228,7 +228,7 @@ impl Scope {
     /// 
     /// This adds '#[ <str> ]' at the top of the file
     pub fn add_attribute(&mut self, val: &str) -> &mut Self {
-        self.inner_attributes.push(val.into());
+        self.inner_attributes.insert(val.into());
         self
     }
 
