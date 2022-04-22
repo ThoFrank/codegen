@@ -73,6 +73,11 @@ impl Function {
         }
     }
 
+    /// Get the function name
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+
     /// Set the function documentation.
     pub fn doc(&mut self, docs: &str) -> &mut Self {
         self.docs = Some(Docs::new(docs));
