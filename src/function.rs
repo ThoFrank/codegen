@@ -126,6 +126,12 @@ impl Function {
         self
     }
 
+    /// Add `mut self` as a function argument.
+    pub fn arg_mut_self_owned(&mut self) -> &mut Self {
+        self.arg_self = Some("mut self".to_string());
+        self
+    }
+
     /// Add a function argument.
     pub fn arg<T>(&mut self, name: &str, ty: T) -> &mut Self
     where
